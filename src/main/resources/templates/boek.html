@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Book Page</title>
+<link rel="stylesheet" type="text/css" href="/css/styles.css">
+
+</head>
+<body>
+	<nav>
+		<ul>
+			<li
+				th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}"><a
+				th:href="@{/bibliotheek/saveBook}">Boek toevoegen</a></li>
+			<li><form th:action="@{/logout}" method="post">
+					<input type="submit" value="Logout" /> <input type="hidden"
+						th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				</form></li>
+		</ul>
+	</nav>
+
+	<h1>Overzicht boeken</h1>
+	<h4 th:text="${username} + ' is ingelogd'"></h4>
+	<div th:if="${successMessage}" class="alert alert-success">
+		<p th:text="${successMessage} + '!'"></p>
+	</div>
+
+	<table>
+		<tr>
+			<th></th>
+			<th>Naam</th>
+			<th>Auteur(s)</th>
+			<th>Details</th>
+		</tr>
+		<th:block th:each="boek,iter:${boeken}">
+			<tr>
+				<td th:text="${iter.count}"></td>
+				<td th:text="${boek.naam}"></td>
+				<td th:text="${#strings.arrayJoin(boek.auteurs.![naam], ', ')}"></td>
+				<td><a th:href="|/bibliotheek/${boek.id}|"><button>zie
+							details</button></a></td>
+			</tr>
+		</th:block>
+	</table>
+	<a th:href="|/bibliotheek/meestFavorieten|">Meest favoriete boeken</a>
+</body>
+</html>
